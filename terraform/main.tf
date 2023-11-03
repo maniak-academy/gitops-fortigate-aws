@@ -23,4 +23,9 @@ module "infra" {
   source = "./infra"
 }
 
-
+module "app" {
+  source = "./app"
+  csprivatecidraz1_subnet_id = module.infra.csprivatesubnetaz1
+  fwsshkey = module.infra.fwsshkey
+  customer_vpc_id = module.infra.customer_vpc_id
+}

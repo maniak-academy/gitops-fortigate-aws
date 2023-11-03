@@ -1,5 +1,6 @@
 # Deployment of FortiGate-VM (BYOL/PAYG) on the AWS with GWLB integration and Transit Gateway
 ## Introduction
+
 A Terraform script to deploy a FortiGate-VM on AWS with Gateway Load Balancer intergration.
 
 ## Requirements
@@ -59,7 +60,9 @@ FortiGate VM(s) are deployed in Security VPC on both public and private subnet i
 Server(s) are deployed in the private subnet in the Customer VPC and Customer 2 VPC in different AZs
 
 Ingress traffic to the Server(s) located in the private subnet in Customer VPC/Customer 2 VPC will be routed to GWLB, redirect to FortiGate-VM's geneve interface and send back out to GWLB endpoint.
+
 Egress traffic from the Server(s) located in the private subnet in Customer VPC/Customer 2 VPC will be routed to GWLB and redirect to FortiGate-VM's geneve interface and send back out to GWLB endpoint.
+
 East/West traffic to each Customer VPC will be routed to transit gateway, and to GWLB, redirected to FortiGate-VM's geneve interface, and then back out and to the destinated VPC.
 
 ![gwlb-transit-architecture](./aws-gwlb-transit.png?raw=true "GWLB Transit Architecture")

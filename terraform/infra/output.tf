@@ -34,3 +34,28 @@ output "CustomerVPC" {
 output "FGTVPC" {
   value = aws_vpc.fgtvm-vpc.id
 }
+
+output "cspublicsubnetaz1" {
+  value = aws_subnet.cspublicsubnetaz1.id
+}
+
+output "cs2publicsubnetaz1" {
+  value = aws_subnet.cs2publicsubnetaz1.id
+}
+
+output "customer_vpc_id" {
+  value = aws_vpc.customer-vpc.id
+}
+
+output "csprivatesubnetaz1" {
+  value = aws_subnet.csprivatesubnetaz1.id
+}
+output "cs2privatesubnetaz1" {
+  value = aws_subnet.cs2privatesubnetaz1.id
+}
+
+output "fwsshkey" {
+  value = aws_key_pair.fwsshkey.key_name
+}
+
+
