@@ -1,12 +1,17 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "5.23.1"
+    }
+    fortios = {
+      source  = "fortinetdev/fortios"
+      version = "1.18.0"
     }
   }
 }
-  terraform {
+
+terraform {
   backend "s3" {
     encrypt        = true
     bucket         = "fortis3-terraform-state"
@@ -19,13 +24,37 @@ provider "aws" {
   region = "eu-west-1"
 }
 
-module "infra" {
-  source = "./infra"
+
+
+
+module "network" {
+  source = "./01-network"
 }
 
-module "app" {
-  source = "./app"
-  csprivatecidraz1_subnet_id = module.infra.csprivatesubnetaz1
-  fwsshkey = module.infra.fwsshkey
-  customer_vpc_id = module.infra.customer_vpc_id
+# module "basefwconfig" {
+#   source = "./02-base-fw-config"
+# }
+
+
+provider "fortios" {
+  hostname = module.network.FGTPublicIP
+  token    = var.fortios_token
+  insecure = "true"
 }
+
+
+
+# module "services" {
+#   source             = "./03-services"
+#   fwsshkey           = module.network.fwsshkey
+#   customer_vpc_id    = module.network.customer_vpc_id
+#   csprivatesubnetaz1 = module.network.csprivatesubnetaz1
+# }
+
+# module "advanced" {
+#   source             = "./04-advanced"
+#   fwsshkey           = module.network.fwsshkey
+#   customer_vpc_id    = module.network.customer_vpc_id
+#   csprivatesubnetaz1 = module.network.csprivatesubnetaz1
+#   csprivatesubnetaz2 = module.network.csprivatesubnetaz2
+# }

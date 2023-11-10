@@ -1,21 +1,12 @@
-variable "csprivatecidraz1_subnet_id" {
-  description = "The subnet ID where the EC2 instance will be deployed"
-}
-variable "fwsshkey" {
-  description = "The fwsshkey where the EC2 instance will be deployed"
-}
 
-variable "customer_vpc_id" {
-  description = "The customer_vpc_id where the EC2 instance will be deployed"
-}
 
-resource "aws_instance" "basion_ec2" {
+resource "aws_instance" "fakeapp_front_ec2" {
   ami             = "ami-0694d931cee176e7d" # Replace with the latest Ubuntu 20.04 AMI in your region
   instance_type   = "t2.micro"
-  subnet_id       = var.csprivatecidraz1_subnet_id
+  subnet_id       = var.csprivatesubnetaz2
   key_name        = var.fwsshkey
   associate_public_ip_address = true  # This line is added to associate a public IP
-  vpc_security_group_ids      = [aws_security_group.basion_sg.id] # Attach the security group
+  vpc_security_group_ids      = [aws_security_group.fakeapp_front_sg.id] # Attach the security group
 
   user_data = <<-EOF
               #!/bin/bash
@@ -26,20 +17,27 @@ resource "aws_instance" "basion_ec2" {
               sudo apt-get update
               sudo apt-get install -y docker-ce
               sudo systemctl start docker
-              sudo systemctl enableÍÍ docker
+              sudo systemctl enable docker
               sudo docker run --rm -d -p 80:3000 bkimminich/juice-shop
               EOF
 
   tags = {
-    Name = "basionServer"
+    Name = "fakeapp_frontServer"
   }
 }
 
-resource "aws_security_group" "basion_sg" {
-  name        = "basion_sg"
+resource "aws_security_group" "fakeapp_front_sg" {
+  name        = "fakeapp_front_sg"
   description = "Allow inbound traffic on port 80 and all outbound traffic"
   vpc_id      = var.customer_vpc_id  # Replace this with your VPC ID if needed
 
+  ingress {
+    description      = "WEBFRONT"
+    from_port        = 9090
+    to_port          = 9090
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"] # Allows traffic from any IP address. Narrow this down as necessary for your use case.
+  }
   ingress {
     description      = "HTTP"
     from_port        = 80
@@ -63,11 +61,12 @@ resource "aws_security_group" "basion_sg" {
   }
 
   tags = {
-    Name = "basion_sg"
+    Name = "fakeapp_front_sg"
   }
 }
 
-output "basion_public_ip" {
-  value = aws_instance.basion_ec2.public_ip
-}
 
+
+output "fakeapp_front_public_ip" {
+  value = aws_instance.fakeapp_front_ec2.public_ip
+}

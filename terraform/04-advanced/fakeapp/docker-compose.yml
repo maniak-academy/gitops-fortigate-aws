@@ -1,0 +1,77 @@
+---
+
+version: "3.3"
+
+services:
+
+  # Define web service and envoy sidecar proxy
+  web:
+    image: nicholasjackson/fake-service:vm-v0.7.7
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9090
+      UPSTREAM_URIS: "http://172.21.0.2:9091, http://172.21.0.3:9092"
+      MESSAGE: "Hello World"
+      NAME: "FrontEnd-Web"
+      SERVER_TYPE: "http"
+      CONSUL_SERVER: 0.0.0.0
+      CONSUL_DATACENTER: "az1"
+      CENTRAL_CONFIG_DIR: /central
+      SERVICE_ID: "web-v1"
+    ports:
+    - "9090:9090"
+
+
+  api:
+    image: nicholasjackson/fake-service:vm-v0.7.7
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9091
+      UPSTREAM_URIS: "http://172.21.0.5:9093"
+      MESSAGE: "Hello World"
+      NAME: "Backend-API"
+      SERVER_TYPE: "http"
+      CONSUL_SERVER: 0.0.0.0
+      CONSUL_DATACENTER: "az1"
+      CENTRAL_CONFIG_DIR: /central
+      SERVICE_ID: "app-v1"
+
+  api2:
+    image: nicholasjackson/fake-service:vm-v0.7.7
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9092
+      UPSTREAM_URIS: "http://172.21.0.5:9093"
+      MESSAGE: "Hello World"
+      NAME: "Backend-API2"
+      SERVER_TYPE: "http"
+      CONSUL_SERVER: 0.0.0.0
+      CONSUL_DATACENTER: "az1"
+      CENTRAL_CONFIG_DIR: /central
+      SERVICE_ID: "app-v2"
+
+  database:
+    image: nicholasjackson/fake-service:vm-v0.7.7
+    environment:
+      LISTEN_ADDR: 0.0.0.0:9093
+      MESSAGE: "Hello World"
+      NAME: "Database"
+      SERVER_TYPE: "http"
+      CONSUL_SERVER: 0.0.0.0
+      CONSUL_DATACENTER: "az1"
+      CENTRAL_CONFIG_DIR: /central
+      SERVICE_ID: "db-v1"
+
+
+
+  # # Define web service and envoy sidecar proxy
+  # api:
+  #   image: nicholasjackson/fake-service:vm-v0.7.7
+  #   environment:
+  #     LISTEN_ADDR: 0.0.0.0:9090
+  #     MESSAGE: "Hello World"
+  #     NAME: "api"
+  #     SERVER_TYPE: "http"
+  #     CONSUL_SERVER: 10.5.0.2
+  #     CONSUL_DATACENTER: "dc1"
+  #     SERVICE_ID: "api-v1"
+  #     DATACENTER: "dc1"
+  #   volumes:
+  #   - "./service_config/api_v1.hcl:/config/api_v1.hcl"

@@ -1,6 +1,4 @@
 //AWS Configuration
-# variable "access_key" {}
-# variable "secret_key" {}
 
 variable "region" {
   default = "eu-west-1"
@@ -28,31 +26,6 @@ variable "privatecidraz1" {
   default = "10.1.1.0/24"
 }
 
-variable "attachcidraz1" {
-  default = "10.1.2.0/24"
-}
-
-variable "gwlbcidraz1" {
-  default = "10.1.3.0/24"
-}
-
-variable "publiccidraz2" {
-  default = "10.1.4.0/24"
-}
-
-variable "privatecidraz2" {
-  default = "10.1.5.0/24"
-}
-
-variable "attachcidraz2" {
-  default = "10.1.6.0/24"
-}
-
-variable "gwlbcidraz2" {
-  default = "10.1.7.0/24"
-}
-
-
 
 // VPC for Customer VPC
 variable "csvpccidr" {
@@ -76,41 +49,6 @@ variable "csprivatecidraz2" {
   default = "20.1.3.0/24"
 }
 
-// VPC for Customer2 VPC
-variable "cs2vpccidr" {
-  default = "30.1.0.0/16"
-}
-
-variable "cs2publiccidraz1" {
-  default = "30.1.0.0/24"
-}
-
-variable "cs2privatecidraz1" {
-  default = "30.1.1.0/24"
-}
-
-
-variable "cs2publiccidraz2" {
-  default = "30.1.2.0/24"
-}
-
-variable "cs2privatecidraz2" {
-  default = "30.1.3.0/24"
-}
-
-// instance architect
-// Either arm or x86
-variable "arch" {
-  default = "arm"
-}
-
-// instance type needs to match the architect
-// c5.xlarge is x86_64
-// c6g.xlarge is arm
-// For detail, refer to https://aws.amazon.com/ec2/instance-types/
-variable "size" {
-  default = "c6g.xlarge"
-}
 
 
 // License Type to create FortiGate-VM
@@ -119,12 +57,25 @@ variable "license_type" {
   default = "payg"
 }
 
+// instance architect
+// Either arm or x86
+variable "arch" {
+  default = "x86"
+}
+
+// instance type needs to match the architect
+// c5.xlarge is x86_64
+// c6g.xlarge is arm
+// For detail, refer to https://aws.amazon.com/ec2/instance-types/
+variable "size" {
+  default = "c5.xlarge"
+}
 
 // AMIs for FGTVM-7.4.1
 variable "fgtami" {
   type = map(any)
   default = {
-    eu-west-1 = {
+    us-east-1 = {
       arm = {
         payg = "ami-05f950ed394d67d16"
         byol = "ami-003c670ea14ca1ddd"
@@ -408,7 +359,6 @@ variable "fgtami" {
 }
 
 
-
 //  Admin HTTPS access port
 variable "adminsport" {
   default = "443"
@@ -417,25 +367,13 @@ variable "adminsport" {
 variable "bootstrap-fgtvm" {
   // Change to your own path
   type    = string
-  default = "./infra/fgtvm.conf"
+  default = "./01-network/fgtvm.conf"
 }
 
-variable "bootstrap-fgtvm2" {
-  // Change to your own path
-  type    = string
-  default = "./infra/fgtvm2.conf"
-}
-
-// license file for the fgt
+// license file for the active fgt
 variable "license" {
   // Change to your own byol license file, license.lic
   type    = string
-  default = "./infra/license.lic"
+  default = "./01-network/license.lic"
 }
 
-// license file for the fgt 2
-variable "license2" {
-  // Change to your own byol license file, license.lic
-  type    = string
-  default = "./infra/license2.lic"
-}

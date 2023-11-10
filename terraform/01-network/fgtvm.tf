@@ -30,10 +30,6 @@ data "aws_network_interface" "vpcendpointip" {
     name   = "description"
     values = ["*ELB*"]
   }
-  filter {
-    name   = "availability-zone"
-    values = ["${var.az1}"]
-  }
 }
 
 resource "aws_network_interface_sg_attachment" "publicattachment" {
@@ -48,21 +44,18 @@ resource "aws_network_interface_sg_attachment" "internalattachment" {
   network_interface_id = aws_network_interface.eth1.id
 }
 
-
 resource "aws_instance" "fgtvm" {
   //it will use region, architect, and license type to decide which ami to use for deployment
   ami               = var.fgtami[var.region][var.arch][var.license_type]
   instance_type     = var.size
   availability_zone = var.az1
   key_name          = aws_key_pair.fwsshkey.key_name
-  user_data = chomp(templatefile("${var.bootstrap-fgtvm}", {
+  user_data = templatefile("${var.bootstrap-fgtvm}", {
     type         = "${var.license_type}"
     license_file = "${var.license}"
     adminsport   = "${var.adminsport}"
-    cidr         = "${var.privatecidraz2}"
-    gateway      = cidrhost(var.privatecidraz1, 1)
     endpointip   = "${data.aws_network_interface.vpcendpointip.private_ip}"
-  }))
+  })
 
   root_block_device {
     volume_type = "standard"
